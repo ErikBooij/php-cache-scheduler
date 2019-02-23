@@ -11,6 +11,9 @@ use Exception;
 
 class Scheduler
 {
+    /** @var ExpirationSpread|null */
+    private $expirationSpread;
+
     /** @var Schedule|null */
     private $schedule;
 
@@ -18,13 +21,15 @@ class Scheduler
     private $systemClock;
 
     /**
-     * @param SystemClock   $systemClock
-     * @param Schedule|null $schedule
+     * @param SystemClock      $systemClock
+     * @param Schedule|null    $schedule
+     * @param ExpirationSpread $expirationSpread
      */
-    public function __construct(SystemClock $systemClock, Schedule $schedule = null)
+    public function __construct(SystemClock $systemClock, Schedule $schedule = null, ExpirationSpread $expirationSpread = null)
     {
         $this->systemClock = $systemClock;
         $this->schedule = $schedule;
+        $this->expirationSpread = $expirationSpread;
     }
 
     /**
@@ -58,7 +63,13 @@ class Scheduler
 
             $switchOverPoint = $schedule->findNextUpToDateSwitchOverPoint($currentDateTime);
 
-            return $this->secondsToSwitchOverPoint($switchOverPoint);
+            $deviation = 0;
+
+            if ($this->expirationSpread instanceof ExpirationSpread) {
+                $deviation = $this->expirationSpread->determineDeviation();
+            }
+
+            return $this->secondsToSwitchOverPoint($switchOverPoint) + $deviation;
         } catch (Exception $ex) {
             return $upToDateTTL;
         }

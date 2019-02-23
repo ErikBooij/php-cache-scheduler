@@ -8,6 +8,7 @@ use DateTimeInterface;
 use ErikBooij\CacheScheduler\Exception\EmptyScheduleException;
 use ErikBooij\CacheScheduler\Exception\NoScheduleProvidedException;
 use ErikBooij\CacheScheduler\Exception\UnableToReadCurrentDateTimeException;
+use ErikBooij\CacheScheduler\ExpirationSpread;
 use ErikBooij\CacheScheduler\Schedule;
 use ErikBooij\CacheScheduler\Scheduler;
 use ErikBooij\CacheScheduler\SwitchOverPoint;
@@ -158,5 +159,32 @@ class SchedulerTest extends TestCase
                 'expectedTimeToLive'     => 33300,
             ],
         ];
+    }
+
+    /**
+     * @return void
+     */
+    public function testCalculateTimeToLiveShouldReturnSecondsToNextSwitchOverPointFuzzedWithinSpecifiedBounds(): void {
+        $expirationSpread = $this->prophesize(ExpirationSpread::class);
+        $switchOverPoint = $this->prophesize(SwitchOverPoint::class);
+
+        $expirationSpread->determineDeviation()->willReturn(-540);
+
+        $switchOverPoint->getDayOfTheWeek()->willReturn(Schedule::MON);
+        $switchOverPoint->getHour()->willReturn(8);
+        $switchOverPoint->getMinute()->willReturn(0);
+
+        $this->schedule->getDesiredState(Argument::type(DateTimeInterface::class))->willReturn(Schedule::STATE_STALE);
+        $this->schedule->findNextUpToDateSwitchOverPoint(Argument::type(DateTimeInterface::class))->willReturn($switchOverPoint);
+
+        $this->systemClock->currentDateTime()->willReturn(new DateTimeImmutable('2019-02-18 02:00:00'));
+
+        $scheduler = new Scheduler(
+            $this->systemClock->reveal(),
+            $this->schedule->reveal(),
+            $expirationSpread->reveal()
+        );
+
+        $this->assertEquals(21060, $scheduler->calculateTimeToLive(self::DEFAULT_TTL), '', 1800);
     }
 }
