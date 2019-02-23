@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<psalm
+    requireVoidReturnType="true"
+    totallyTyped="true"
+    useDocblockTypes="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config file:///Users/erikbooij/Projects/PHP/cache-scheduler/vendor/vimeo/psalm/config.xsd"
+>
+    <projectFiles>
+        <directory name="src" />
+        <ignoreFiles>
+            <directory name="vendor" />
+        </ignoreFiles>
+    </projectFiles>
+</psalm>

@@ -1,0 +1,9 @@
+<phpunit
+    forceCoversAnnotation="true"
+>
+    <testsuites>
+        <testsuite name="All">
+            <directory>tests/unit</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

@@ -1,0 +1,37 @@
+{
+  "name": "erikbooij/cache-scheduler",
+  "description": "A simple way to get the most out of your cache TTL.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Erik Booij",
+      "email": "erik@booij.me"
+    }
+  ],
+  "config": {
+    "sort-packages": true
+  },
+  "autoload": {
+    "psr-4": {
+      "ErikBooij\\CacheScheduler\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "ErikBooij\\Tests\\CacheScheduler\\": "tests/unit"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.0",
+    "vimeo/psalm": "^3.0"
+  },
+  "scripts": {
+    "test": [
+      "@test-unit",
+      "@test-static"
+    ],
+    "test-static": "psalm",
+    "test-unit": "phpunit"
+  }
+}
