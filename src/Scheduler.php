@@ -12,37 +12,35 @@ use Exception;
 class Scheduler
 {
     /** @var ExpirationSpread|null */
-    private $expirationSpread;
+    private $expirationSpread = null;
 
     /** @var Schedule|null */
-    private $schedule;
+    private $schedule = null;
 
     /** @var SystemClock */
     private $systemClock;
 
     /**
      * @param SystemClock      $systemClock
-     * @param Schedule|null    $schedule
-     * @param ExpirationSpread $expirationSpread
      */
-    public function __construct(SystemClock $systemClock, Schedule $schedule = null, ExpirationSpread $expirationSpread = null)
+    public function __construct(SystemClock $systemClock)
     {
         $this->systemClock = $systemClock;
-        $this->schedule = $schedule;
-        $this->expirationSpread = $expirationSpread;
     }
 
     /**
-     * @param int           $upToDateTTL
-     * @param Schedule|null $schedule
+     * @param int                   $upToDateTTL
+     * @param Schedule|null         $schedule
+     * @param ExpirationSpread|null $expirationSpread
      *
      * @return int
-     * @throws NoScheduleProvidedException
      * @throws EmptyScheduleException
+     * @throws NoScheduleProvidedException
      */
-    public function calculateTimeToLive(int $upToDateTTL, Schedule $schedule = null): int
+    public function calculateTimeToLive(int $upToDateTTL, Schedule $schedule = null, ExpirationSpread $expirationSpread = null): int
     {
         $schedule = $schedule ?? $this->schedule;
+        $expirationSpread = $expirationSpread ?? $this->expirationSpread;
 
         if ($schedule === null) {
             throw new NoScheduleProvidedException;
@@ -65,8 +63,8 @@ class Scheduler
 
             $deviation = 0;
 
-            if ($this->expirationSpread instanceof ExpirationSpread) {
-                $deviation = $this->expirationSpread->determineDeviation();
+            if ($expirationSpread instanceof ExpirationSpread) {
+                $deviation = $expirationSpread->determineDeviation();
             }
 
             return $this->secondsToSwitchOverPoint($switchOverPoint) + $deviation;
@@ -106,5 +104,31 @@ class Scheduler
         $switchOverDateTime->setTime($switchOverPoint->getHour(), $switchOverPoint->getMinute());
 
         return $switchOverDateTime->getTimestamp() - $currentDateTime->getTimestamp();
+    }
+
+    /**
+     * @param ExpirationSpread $expirationSpread
+     *
+     * @return Scheduler
+     */
+    public function setExpirationSpread(ExpirationSpread $expirationSpread): self
+    {
+        $scheduler = clone $this;
+        $scheduler->expirationSpread = $expirationSpread;
+
+        return $scheduler;
+    }
+
+    /**
+     * @param Schedule $schedule
+     *
+     * @return Scheduler
+     */
+    public function setSchedule(Schedule $schedule): self
+    {
+        $scheduler = clone $this;
+        $scheduler->schedule = $schedule;
+
+        return $scheduler;
     }
 }

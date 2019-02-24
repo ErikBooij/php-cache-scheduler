@@ -16,9 +16,39 @@ class ExpirationSpread
     /**
      * @param int $spread
      */
-    public function __construct(int $spread)
+    private function __construct(int $spread)
     {
-        $this->spread = $spread;
+        $this->spread = abs($spread);
+    }
+
+    /**
+     * @param int $seconds
+     *
+     * @return ExpirationSpread
+     */
+    public static function seconds(int $seconds): self
+    {
+        return new static($seconds);
+    }
+
+    /**
+     * @param int $minutes
+     *
+     * @return ExpirationSpread
+     */
+    public static function minutes(int $minutes): self
+    {
+        return new static($minutes * 60);
+    }
+
+    /**
+     * @param int $hours
+     *
+     * @return ExpirationSpread
+     */
+    public static function hours(int $hours): self
+    {
+        return new static($hours * 3600);
     }
 
     /**

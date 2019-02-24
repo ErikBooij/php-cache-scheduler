@@ -55,8 +55,10 @@ class SchedulerTest extends TestCase
         $this->expectException(EmptyScheduleException::class);
         $this->schedule->isClear()->willReturn(true);
 
-        $scheduler = new Scheduler($this->systemClock->reveal());
-        $scheduler->calculateTimeToLive(self::DEFAULT_TTL, $this->schedule->reveal());
+        $scheduler = (new Scheduler($this->systemClock->reveal()))
+            ->setSchedule($this->schedule->reveal());
+
+        $scheduler->calculateTimeToLive(self::DEFAULT_TTL);
     }
 
     /**
@@ -66,7 +68,8 @@ class SchedulerTest extends TestCase
     {
         $this->systemClock->currentDateTime()->willThrow(new UnableToReadCurrentDateTimeException);
 
-        $scheduler = new Scheduler($this->systemClock->reveal(), $this->schedule->reveal());
+        $scheduler = (new Scheduler($this->systemClock->reveal()))
+            ->setSchedule($this->schedule->reveal());
 
         $this->assertEquals(self::DEFAULT_TTL, $scheduler->calculateTimeToLive(self::DEFAULT_TTL));
     }
@@ -79,7 +82,8 @@ class SchedulerTest extends TestCase
         $this->schedule->getDesiredState(Argument::type(DateTimeInterface::class))->willReturn(Schedule::STATE_UP_TO_DATE);
         $this->systemClock->currentDateTime()->willReturn(new DateTimeImmutable('2019-02-20 12:00:00'));
 
-        $scheduler = new Scheduler($this->systemClock->reveal(), $this->schedule->reveal());
+        $scheduler = (new Scheduler($this->systemClock->reveal()))
+            ->setSchedule($this->schedule->reveal());
 
         $this->assertEquals(self::DEFAULT_TTL, $scheduler->calculateTimeToLive(self::DEFAULT_TTL));
     }
@@ -112,7 +116,8 @@ class SchedulerTest extends TestCase
 
         $this->systemClock->currentDateTime()->willReturn($currentDateTime);
 
-        $scheduler = new Scheduler($this->systemClock->reveal(), $this->schedule->reveal());
+        $scheduler = (new Scheduler($this->systemClock->reveal()))
+            ->setSchedule($this->schedule->reveal());
 
         $this->assertEquals($expectedTimeToLive, $scheduler->calculateTimeToLive(self::DEFAULT_TTL));
     }
@@ -179,11 +184,9 @@ class SchedulerTest extends TestCase
 
         $this->systemClock->currentDateTime()->willReturn(new DateTimeImmutable('2019-02-18 02:00:00'));
 
-        $scheduler = new Scheduler(
-            $this->systemClock->reveal(),
-            $this->schedule->reveal(),
-            $expirationSpread->reveal()
-        );
+        $scheduler = (new Scheduler($this->systemClock->reveal()))
+            ->setSchedule($this->schedule->reveal())
+            ->setExpirationSpread($expirationSpread->reveal());
 
         $this->assertEquals(21060, $scheduler->calculateTimeToLive(self::DEFAULT_TTL), '', 1800);
     }
