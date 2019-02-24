@@ -1,4 +1,4 @@
-This *Cache Scheduler* is a library that allows you to vary your cache TTLs according to a self defined schedule. I've written [a little blog post on why you might want to consider that](https://dev.to/link-to-be-updated-later-due-to-circular-reference-between-post-and-readme).
+This *Cache Scheduler* is a library that allows you to vary your cache TTLs according to a self defined schedule. I've written [a little blog post on why you might want to consider that](https://dev.to/erikbooij/getting-the-most-out-of-server-side-caching-35o7).
 
 Usage is simple:
  
