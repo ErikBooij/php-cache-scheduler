@@ -16,7 +16,7 @@ class ScheduleTest extends TestCase
     /** @var Schedule */
     private $schedule;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->schedule = (new Schedule)
             ->requireUpToDateDataFrom(Schedule::MON, 8, 0)
@@ -29,6 +29,11 @@ class ScheduleTest extends TestCase
             ->allowStaleDataFrom(Schedule::THU, 17, 30)
             ->requireUpToDateDataFrom(Schedule::FRI, 8, 0)
             ->allowStaleDataFrom(Schedule::FRI, 17, 30);
+    }
+
+    public function testIsClear()
+    {
+        $this->assertFalse($this->schedule->isClear());
     }
 
     /**
