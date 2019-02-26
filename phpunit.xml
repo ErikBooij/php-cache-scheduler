@@ -1,9 +1,21 @@
-<phpunit
-    forceCoversAnnotation="true"
->
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false">
     <testsuites>
-        <testsuite name="All">
-            <directory>tests/unit</directory>
+        <testsuite name="Unit tests">
+            <directory suffix="Test.php">./tests/unit</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src</directory>
+        </whitelist>
+    </filter>
 </phpunit>

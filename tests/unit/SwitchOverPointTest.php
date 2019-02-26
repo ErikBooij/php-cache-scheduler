@@ -145,4 +145,32 @@ class SwitchOverPointTest extends TestCase
             ],
         ];
     }
+
+    public function testGetDayOfTheWeek()
+    {
+        $switchOverPoint = new SwitchOverPoint(Schedule::WED, 14, 30, Schedule::STATE_STALE);
+
+        $this->assertEquals(3, $switchOverPoint->getDayOfTheWeek());
+    }
+
+    public function testGetHour()
+    {
+        $switchOverPoint = new SwitchOverPoint(Schedule::WED, 14, 30, Schedule::STATE_STALE);
+
+        $this->assertEquals(14, $switchOverPoint->getHour());
+    }
+
+    public function testGetMinute()
+    {
+        $switchOverPoint = new SwitchOverPoint(Schedule::WED, 14, 30, Schedule::STATE_STALE);
+
+        $this->assertEquals(30, $switchOverPoint->getMinute());
+    }
+
+    public function testGetState()
+    {
+        $switchOverPoint = new SwitchOverPoint(Schedule::WED, 14, 30, Schedule::STATE_STALE);
+
+        $this->assertEquals('stale', $switchOverPoint->getState());
+    }
 }

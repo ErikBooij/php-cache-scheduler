@@ -28,7 +28,7 @@ class SchedulerTest extends TestCase
     /** @var ObjectProphecy */
     private $systemClock;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->schedule = $this->prophesize(Schedule::class);
         $this->systemClock = $this->prophesize(SystemClock::class);
@@ -188,6 +188,6 @@ class SchedulerTest extends TestCase
             ->setSchedule($this->schedule->reveal())
             ->setExpirationSpread($expirationSpread->reveal());
 
-        $this->assertEquals(21060, $scheduler->calculateTimeToLive(self::DEFAULT_TTL), '', 1800);
+        $this->assertEquals(21060, $scheduler->calculateTimeToLive(self::DEFAULT_TTL), '', 1800.0);
     }
 }
